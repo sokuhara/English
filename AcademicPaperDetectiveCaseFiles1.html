@@ -312,6 +312,42 @@ td.en{font-weight:600;white-space:nowrap}
   <div class="row"><button class="btn" id="toGame">もう一度AIと対決する</button></div>
 </section>
 
+<!-- 11 -->
+<section class="page ws" data-title="最終課題">
+  <h2>最終課題（Moodle に提出）</h2>
+  <p class="lead">下の3問に答え、「提出用にまとめてコピー」を押して、Moodle の課題に貼り付けて提出してください。</p>
+
+  <h3>問1　事件ファイルを読み取る</h3>
+  <p>事件ファイル（じゃんけんAIのアブストラクト）の目的・方法・結果・結論を、それぞれ日本語1文でまとめなさい。結果には数字を必ず入れること。</p>
+  <label for="f-aim">🎯 目的</label><textarea id="f-aim" data-k="f_aim"></textarea>
+  <label for="f-method">🛠️ 方法</label><textarea id="f-method" data-k="f_method"></textarea>
+  <label for="f-result">🔍 結果</label><textarea id="f-result" data-k="f_result"></textarea>
+  <label for="f-concl">🧠 結論 <span class="hint">主張の強さ（suggest）を訳に反映すること</span></label><textarea id="f-concl" data-k="f_concl"></textarea>
+
+  <h3>問2　AIの要約を自分で検証する</h3>
+  <p>翻訳AIや要約AI（どれでもよい）に事件ファイルを日本語で要約させ、その要約を原文と照らし合わせなさい。確認した点を2つ挙げ、それぞれについて、AIの記述、原文の該当する英文、判定（正しい／誤り）を書きなさい。</p>
+  <p class="status">数字、否定（not）、主張の強さ、比較の相手を中心に確認すること。誤りが見つからなかった場合は、確認して正しかった点を書けばよい。</p>
+  <label for="f-tool">使ったAI</label><textarea id="f-tool" data-k="f_tool" style="min-height:2.6rem"></textarea>
+  <label for="f-c1">確認1 <span class="hint">AIの記述／原文の英文／判定</span></label><textarea id="f-c1" data-k="f_c1"></textarea>
+  <label for="f-c2">確認2 <span class="hint">AIの記述／原文の英文／判定</span></label><textarea id="f-c2" data-k="f_c2"></textarea>
+
+  <h3>問3　次の研究を英語で提案する</h3>
+  <p>9ページ目で考えた「次の研究」を、下の型を使って英語3文で書きなさい。</p>
+  <label for="f-e1">目的 <span class="hint en">In this study, we ask whether …</span></label><textarea id="f-e1" data-k="f_e1" class="en"></textarea>
+  <label for="f-e2">方法 <span class="hint en">We will … with …</span></label><textarea id="f-e2" data-k="f_e2" class="en"></textarea>
+  <label for="f-e3">予想 <span class="hint en">We expect that …</span></label><textarea id="f-e3" data-k="f_e3" class="en"></textarea>
+
+  <div class="box">
+    <p><strong>評価のポイント</strong></p>
+    <p>問1：原文を正確に読めているか（数字と主張の強さ）。問2：原文の英文を根拠として示せているか。問3：目的と方法が対応しているか。英文は多少の誤りがあっても、意味が伝われば評価します。</p>
+  </div>
+  <div class="row">
+    <button class="btn primary" id="copyFinal">提出用にまとめてコピー</button>
+    <span class="status" id="finalStatus" aria-live="polite"></span>
+  </div>
+  <p class="status">書いた内容はこのブラウザに保存されますが、教員には送信されません。必ず Moodle に貼り付けて提出してください。</p>
+</section>
+
 <div class="pager"><button class="btn" id="prev">前へ</button><button class="btn primary" id="next">次へ</button></div>
 </div>
 
@@ -571,6 +607,16 @@ td.en{font-weight:600;white-space:nowrap}
     if (!confirm('書いた内容を消去します。よろしいですか。')) return;
     fields.forEach(function(el){ el.value=''; }); data = {}; try { localStorage.removeItem(KEY); } catch(e){}
     st.textContent = '消去しました。';
+  };
+  document.getElementById('copyFinal').onclick = function(){
+    var g = function(k){ var e = document.querySelector('.ws [data-k="'+k+'"]'); return e ? e.value.trim() : ''; };
+    var fs = document.getElementById('finalStatus');
+    var text = ['【論文探偵 最終課題】','','■ 問1 事件ファイルを読み取る',
+      '目的：' + g('f_aim'),'方法：' + g('f_method'),'結果：' + g('f_result'),'結論：' + g('f_concl'),'',
+      '■ 問2 AIの要約を検証する','使ったAI：' + g('f_tool'),'確認1：' + g('f_c1'),'確認2：' + g('f_c2'),'',
+      '■ 問3 次の研究の提案','目的：' + g('f_e1'),'方法：' + g('f_e2'),'予想：' + g('f_e3')].join('\n');
+    function fb(){ var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); fs.textContent = 'コピーしました。Moodle に貼り付けてください。'; } catch(e){ fs.textContent = 'コピーできませんでした。'; } document.body.removeChild(ta); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ fs.textContent = 'コピーしました。Moodle に貼り付けてください。'; }, fb); else fb();
   };
 })();
 </script>
